@@ -235,8 +235,8 @@ def generate_prompt(query, docs):
 
 
 def run():
-    BGE_MODEL_PATH = "D:\\codes\\bge-large-zh"
-    # BGE_MODEL_PATH = "BAAI/bge-large-zh-v1.5"
+    #BGE_MODEL_PATH = "D:\\codes\\bge-large-zh"
+    BGE_MODEL_PATH = "BAAI/bge-large-zh-v1.5"
     FILE_PATH = "D:\\codes\\zsxq"
     embedding_model = BaaiEmbedding(BGE_MODEL_PATH)
     files = extract_file_dirs(FILE_PATH)
