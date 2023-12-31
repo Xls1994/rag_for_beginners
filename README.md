@@ -1,5 +1,10 @@
 # rag_for_beginners
 
+## 简化版 
+
+参考   ``` rag_with_openai_embedding.py ```，只使用了OpenAI的embedding接口，没有调用向量模型，实现简单。</br>
+可以先跑通这个流程。
+
 ## 安装依赖
 
 ```bash
