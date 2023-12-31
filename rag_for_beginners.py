@@ -7,7 +7,7 @@ import torch
 from tqdm import tqdm
 from typing import cast, List, Union
 from transformers import AutoModel, AutoTokenizer
-from openai import OpenAI
+
 class FlagModel:
    def __init__(
            self,
@@ -233,10 +233,15 @@ def generate_prompt(query, docs):
                                                                   context)
     return prompt
 
+def get_openai_client():
+    return openai.OpenAI(
+        api_key="sk-6V2exWFBSa2lmuZ7C0D773D1BaEd4fB7A1B6A0A265D550C6",
+        base_url="https://key.wenwen-ai.com/v1"
+    )
 
 def run():
-    #BGE_MODEL_PATH = "D:\\codes\\bge-large-zh"
-    BGE_MODEL_PATH = "BAAI/bge-large-zh-v1.5"
+    BGE_MODEL_PATH = "D:\\codes\\bge-large-zh"
+    # BGE_MODEL_PATH = "BAAI/bge-large-zh-v1.5"
     FILE_PATH = "D:\\codes\\zsxq"
     embedding_model = BaaiEmbedding(BGE_MODEL_PATH)
     files = extract_file_dirs(FILE_PATH)
@@ -252,7 +257,8 @@ def run():
 
     path = "./zsxq"
     vectordb = ChromaDB(path)
-    if not os.path.exists(path):
+    load_data = False
+    if load_data:
         emb = embedding_model.embed_documents(chunks)
         vectordb.from_texts(emb, chunks)
 
@@ -267,17 +273,15 @@ def run():
     prompt = generate_prompt(query, result)
     print(prompt)
 
-    generate_for_llm =False
+    generate_for_llm = True
     # 调用 OpenAI 的 API 生成回答
     if generate_for_llm:
-        openai.apk_key = "XXXXXXXX"
-        client = OpenAI()
+        client = get_openai_client()
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}])
 
-        print(response['choices'][0]['message']['content'])
-
+        print(response.choices[0].message.content)
 
 if __name__ == "__main__":
     print("hello world")
