@@ -63,7 +63,8 @@ def split_chunks(text, chunk_size):
     docs = []
     doc_size = 0
     tmp = []
-    for line in text.split():
+    
+    for line in text.split("\n"):
         line = line.strip()
         if len(line) + doc_size < chunk_size:
             tmp.append(line)
@@ -72,6 +73,11 @@ def split_chunks(text, chunk_size):
             docs.append("\n".join(tmp))
             tmp = []
             doc_size = 0
+    
+    # 添加最后一个块（如果存在）
+    if tmp:
+        docs.append("\n".join(tmp))
+    
     return docs
 
 
@@ -114,7 +120,7 @@ def get_embeddings(embedding_input):
 
 
 def run():
-    FILE_PATH = "D:\\codes\\zsxq"
+    FILE_PATH = "./zsxq"
     files = extract_file_dirs(FILE_PATH)
     loaders = [TextLoader(f, encoding='utf-8') for f in files]
 
@@ -126,14 +132,15 @@ def run():
         chunk = split_chunks(doc, 150)
         chunks.extend(chunk)
 
-    path = "./zsxq_openai"
+    path = "./chroma_data"
     vectordb = ChromaDB(path)
-    load_data = True
-    if load_data:
-        emb = get_embeddings(chunks)
+    num = vectordb.collection.count()    
+    if len(chunks)>num:
+        print("load embedding ...")
+        emb = get_embeddings(chunks)        
         vectordb.from_texts(emb, chunks)
 
-    query = "什么是知识星球"
+    query = "什么是知识星球?"
     embedding = get_embeddings([query])[0]
     result = vectordb.search(embedding, 4)
 
