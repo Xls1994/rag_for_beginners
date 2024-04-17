@@ -266,7 +266,7 @@ def run():
     num = vectordb.collection.count()    
     if len(chunks)>num:
         print("load embedding ...")
-        emb = get_embeddings(chunks)        
+        emb = embedding_model.embed_documents(chunks)        
         vectordb.from_texts(emb, chunks)
 
     query = "什么是知识星球?"
